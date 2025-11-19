@@ -33,11 +33,9 @@ class Equipamento(models.Model):
         blank=True,
         null=True
     )
-    data_aquisicao = models.DataField(
-        verbose_name="Data de Aquisição",
-        blank=True,
-        null=True
-    )
+
+    data_aquisicao = models.DateField()
+
     categoria = models.ForeignKey(
         Categoria,
         on_delete=models.SET_NULL,
@@ -46,11 +44,11 @@ class Equipamento(models.Model):
         related_name = 'equipamentos',
         verbose_name = "Categoria",
     )
-    STATUS_CHOICES = (
+    STATUS_CHOICES = [
         ('EM_USO', 'Em uso'),
         ('ESTOQUE', 'Estoque'),
         ('MANUTENCAO', 'Manutenção')
-    )
+    ]
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,
