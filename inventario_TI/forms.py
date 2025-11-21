@@ -1,16 +1,18 @@
 from django import forms
-from .models import Equipamentos
+from .models import Equipamento
 
 class EquipamentoForm(forms.ModelForm):
     
     class Meta:
-        model = Equipamentos
+        model = Equipamento
 
         fields = [
             'nome',
-            'numero_serie'
-            'cor'
-            'data_aquisicao'
-            'categoria'
+            'numero_serie',
+            'data_aquisicao',
+            'categoria',
             'status'
         ]
+        widgets = {
+            'data_aquisicao': forms.DateInput(attrs={'type': 'date'}),
+            }

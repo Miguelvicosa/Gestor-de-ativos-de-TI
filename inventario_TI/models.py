@@ -28,11 +28,6 @@ class Equipamento(models.Model):
         unique=True,
         verbose_name="Número de Série"
     )
-    cor = models.CharField(
-        max_length=50,
-        blank=True,
-        null=True
-    )
 
     data_aquisicao = models.DateField()
 

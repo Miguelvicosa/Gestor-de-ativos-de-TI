@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Equipamentos - Inventário TI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .header-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .header-card h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+        .equipment-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        .equipment-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        .equipment-card .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .badge-status {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            border-radius: 20px;
+        }
+        .empty-state {
+            background: white;
+            border-radius: 15px;
+            padding: 60px 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .empty-state-icon {
+            font-size: 5rem;
+            opacity: 0.3;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-outline-primary {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        .btn-outline-primary:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-card">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2">🖥️ Inventário de Equipamentos TI</h1>
+                    <p class="text-muted mb-0">Gerencie todos os equipamentos de tecnologia da empresa</p>
+                </div>
+                <div class="col-md-4 text-end mt-3 mt-md-0">
+                    <a href="{% url 'cadastro_equipamento' %}" class="btn btn-primary">
+                        ➕ Novo Equipamento
+                    </a>
+                    <a href="/admin/" class="btn btn-outline-secondary ms-2">
+                        ⚙️ Admin
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% if equipamentos %}
+            <div class="row g-4">
+                {% for equipamento in equipamentos %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card equipment-card">
+                        <div class="card-header">
+                            {{ equipamento.nome }}
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <small class="text-muted d-block mb-1">📋 Número de Série</small>
+                                <strong>{{ equipamento.numero_serie }}</strong>
+                            </div>
+
+                            {% if equipamento.categoria %}
+                            <div class="mb-3">
+                                <small class="text-muted d-block mb-1">🏷️ Categoria</small>
+                                <strong>{{ equipamento.categoria }}</strong>
+                            </div>
+                            {% endif %}
+
+                            {% if equipamento.cor %}
+                            <div class="mb-3">
+                                <small class="text-muted d-block mb-1">🎨 Cor</small>
+                                <strong>{{ equipamento.cor }}</strong>
+                            </div>
+                            {% endif %}
+
+                            <div class="mb-3">
+                                <small class="text-muted d-block mb-1">📅 Data de Aquisição</small>
+                                <strong>{{ equipamento.data_aquisicao|date:"d/m/Y" }}</strong>
+                            </div>
+
+                            <div class="mb-3">
+                                <small class="text-muted d-block mb-1">📊 Status</small>
+                                <span class="badge badge-status
+                                    {% if equipamento.status == 'EM_USO' %}bg-success
+                                    {% elif equipamento.status == 'ESTOQUE' %}bg-warning text-dark
+                                    {% else %}bg-danger{% endif %}">
+                                    {{ equipamento.get_status_display }}
+                                </span>
+                            </div>
+
+                            <div class="d-grid">
+                                <a href="{% url 'detalhe_equipamento' equipamento.id %}" 
+                                   class="btn btn-outline-primary">
+                                    👁️ Ver Detalhes
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="text-center mt-5">
+                <div class="bg-white rounded-pill d-inline-block px-4 py-2 shadow">
+                    <strong>Total de Equipamentos:</strong> 
+                    <span class="badge bg-primary ms-2">{{ equipamentos|length }}</span>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📦</div>
+                <h3 class="mt-4 mb-3">Nenhum equipamento cadastrado</h3>
+                <p class="text-muted mb-4">
+                    Comece adicionando seu primeiro equipamento ao inventário
+                </p>
+                <a href="{% url 'cadastro_equipamento' %}" class="btn btn-primary btn-lg">
+                    ➕ Cadastrar Primeiro Equipamento
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

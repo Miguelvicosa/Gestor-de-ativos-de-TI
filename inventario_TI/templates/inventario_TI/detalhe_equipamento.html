@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ equipamento.nome }} - Inventário TI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .detail-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .card-header-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+        }
+        .card-header-custom h2 {
+            margin: 0;
+            font-weight: bold;
+        }
+        .card-header-custom .subtitle {
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        .info-row {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+        .info-row:hover {
+            background: #f8f9fa;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .info-value {
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: 500;
+        }
+        .badge-status {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 25px;
+        }
+        .action-buttons {
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col">
+                <a href="{% url 'lista_equipamentos' %}" class="btn btn-light">
+                    ← Voltar para Lista
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card detail-card">
+                    <div class="card-header-custom">
+                        <h2>{{ equipamento.nome }}</h2>
+                        <p class="subtitle mb-0">Informações detalhadas do equipamento</p>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="info-row">
+                            <div class="info-label">📋 Número de Série</div>
+                            <div class="info-value">{{ equipamento.numero_serie }}</div>
+                        </div>
+
+                        {% if equipamento.categoria %}
+                        <div class="info-row">
+                            <div class="info-label">🏷️ Categoria</div>
+                            <div class="info-value">{{ equipamento.categoria }}</div>
+                        </div>
+                        {% endif %}
+
+                        {% if equipamento.cor %}
+                        <div class="info-row">
+                            <div class="info-label">🎨 Cor</div>
+                            <div class="info-value">{{ equipamento.cor }}</div>
+                        </div>
+                        {% endif %}
+
+                        <div class="info-row">
+                            <div class="info-label">📅 Data de Aquisição</div>
+                            <div class="info-value">{{ equipamento.data_aquisicao|date:"d/m/Y" }}</div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-label">📊 Status do Equipamento</div>
+                            <div class="info-value">
+                                <span class="badge badge-status
+                                    {% if equipamento.status == 'EM_USO' %}bg-success
+                                    {% elif equipamento.status == 'ESTOQUE' %}bg-warning text-dark
+                                    {% else %}bg-danger{% endif %}">
+                                    {% if equipamento.status == 'EM_USO' %}✓{% elif equipamento.status == 'ESTOQUE' %}📦{% else %}🔧{% endif %}
+                                    {{ equipamento.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-label">🆔 ID do Sistema</div>
+                            <div class="info-value">#{{ equipamento.id }}</div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="{% url 'lista_equipamentos' %}" class="btn btn-secondary">
+                                ← Voltar
+                            </a>
+                            <a href="/admin/inventario_TI/equipamento/{{ equipamento.id }}/change/" 
+                               class="btn btn-warning" target="_blank">
+                                ✏️ Editar
+                            </a>
+                            <a href="/admin/inventario_TI/equipamento/{{ equipamento.id }}/delete/" 
+                               class="btn btn-danger" target="_blank">
+                                🗑️ Excluir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="info-card">
+                    <div class="icon-box">
+                        📊
+                    </div>
+                    <h5>Resumo</h5>
+                    <p class="text-muted mb-3">
+                        Este equipamento está cadastrado no inventário de TI da empresa.
+                    </p>
+                    
+                    <hr>
+                    
+                    <div class="mb-3">
+                        <strong>Status Atual:</strong><br>
+                        <span class="badge 
+                            {% if equipamento.status == 'EM_USO' %}bg-success
+                            {% elif equipamento.status == 'ESTOQUE' %}bg-warning text-dark
+                            {% else %}bg-danger{% endif %} mt-2">
+                            {{ equipamento.get_status_display }}
+                        </span>
+                    </div>
+
+                    {% if equipamento.categoria %}
+                    <div class="mb-3">
+                        <strong>Categoria:</strong><br>
+                        <span class="text-muted">{{ equipamento.categoria }}</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <strong>Cadastrado em:</strong><br>
+                        <span class="text-muted">{{ equipamento.data_aquisicao|date:"d/m/Y" }}</span>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="icon-box">
+                        ⚙️
+                    </div>
+                    <h5>Ações Rápidas</h5>
+                    <div class="d-grid gap-2">
+                        <a href="/admin/inventario_TI/equipamento/{{ equipamento.id }}/change/" 
+                           class="btn btn-outline-primary" target="_blank">
+                            Editar no Admin
+                        </a>
+                        <a href="{% url 'lista_equipamentos' %}" class="btn btn-outline-secondary">
+                            Ver Todos os Equipamentos
+                        </a>
+                        <a href="{% url 'cadastro_equipamento' %}" class="btn btn-outline-success">
+                            Cadastrar Novo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

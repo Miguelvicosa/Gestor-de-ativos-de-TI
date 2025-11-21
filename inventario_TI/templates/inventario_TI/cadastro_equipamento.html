@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Equipamento - Inventário TI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .card {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: none;
+            border-radius: 15px;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 20px;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #333;
+        }
+        .required {
+            color: #dc3545;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 10px 30px;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col">
+                <a href="{% url 'lista_equipamentos' %}" class="btn btn-light">
+                    ← Voltar para Lista
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="mb-0">📦 Cadastrar Novo Equipamento</h2>
+                        <p class="mb-0 mt-2 opacity-75">Preencha os dados abaixo para adicionar um novo equipamento ao inventário</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            {% if form.errors %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <h5><strong>⚠️ Erros no formulário:</strong></h5>
+                                <ul class="mb-0">
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                                            <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form.non_field_errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endif %}
+
+                            <div class="mb-4">
+                                <label for="{{ form.nome.id_for_label }}" class="form-label">
+                                    {{ form.nome.label }} <span class="required">*</span>
+                                </label>
+                                {{ form.nome }}
+                                <small class="form-text text-muted">Ex: Notebook Dell Inspiron 15</small>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="{{ form.numero_serie.id_for_label }}" class="form-label">
+                                    {{ form.numero_serie.label }} <span class="required">*</span>
+                                </label>
+                                {{ form.numero_serie }}
+                                <small class="form-text text-muted">Ex: SN123456789</small>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.cor.id_for_label }}" class="form-label">
+                                        {{ form.cor.label }}
+                                    </label>
+                                    {{ form.cor }}
+                                    <small class="form-text text-muted">Campo opcional</small>
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.data_aquisicao.id_for_label }}" class="form-label">
+                                        {{ form.data_aquisicao.label }} <span class="required">*</span>
+                                    </label>
+                                    {{ form.data_aquisicao }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.categoria.id_for_label }}" class="form-label">
+                                        {{ form.categoria.label }}
+                                    </label>
+                                    {{ form.categoria }}
+                                    <small class="form-text text-muted">
+                                        <a href="/admin/inventario_TI/categoria/add/" target="_blank">➕ Criar nova categoria</a>
+                                    </small>
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.status.id_for_label }}" class="form-label">
+                                        {{ form.status.label }} <span class="required">*</span>
+                                    </label>
+                                    {{ form.status }}
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="{% url 'lista_equipamentos' %}" class="btn btn-secondary me-md-2">
+                                    ✖️ Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    💾 Salvar Equipamento
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
